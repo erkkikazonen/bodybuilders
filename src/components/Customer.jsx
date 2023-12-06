@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { Button } from "@mui/material";
+import AddCustomer from "./AddCustomer";
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
@@ -22,7 +23,7 @@ function Customer() {
     { field: "email", sortable: true, filter: true },
     { field: "phone", sortable: true, filter: true },
     { cellRenderer: params => 
-      <Button size="small" onClick={() => deleteCustomer(params.data.Customer)}>
+      <Button size="small" onClick={() => deleteCustomer(params)}>
         Delete
         </Button>,
         width: 120
@@ -51,21 +52,23 @@ function Customer() {
       .catch(err => console.error(err));
   };
 
-  const deleteCustomer = (url) => {
+  const deleteCustomer = (params) => {
     if (window.confirm("Are you sure?")) {
-      fetch(url, { method: 'DELETE' })
-      .then(response => {
-        if (response.ok)
-          fetchCustomers();
-        else
-          throw new Error("Error in DELETE: " + response.statusText);
-      })
-      .catch(err=> console.error(err));
+      fetch(`http://traineeapp.azurewebsites.net/api/customers/${params.value}`, { method: 'DELETE' })
+        .then(response => {
+          if (response.ok)
+            fetchCustomers();
+          else
+            throw new Error("Error in DELETE: " + response.statusText);
+        })
+        .catch(err => console.error(err));
     }
   };
+  
 
   return (
     <>
+      <AddCustomer fetchCustomers={fetchCustomers} />
       <div className="ag-theme-material" style={{ width: '100%', height: 600 }}>
         <AgGridReact
           rowData={customers}
