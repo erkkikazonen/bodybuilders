@@ -40,21 +40,6 @@ function Training() {
       .catch(err => console.error(err));
   };
 
-  const getTrainings = (customerId) => {
-    fetch(`https://traineeapp.azurewebsites.net/api/customers/gettrainings?customerId=${customerId}`)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          console.error("Error in fetch:", response.status, response.statusText);
-          throw new Error("Failed to fetch");
-        }
-      })
-      .then((data) => {
-        return data; 
-      })
-      .catch((err) => console.error(err));
-  };
 
   return (
     <>
