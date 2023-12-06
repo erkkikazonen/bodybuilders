@@ -1,11 +1,10 @@
-// Customer.jsx
 import React, { useEffect, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { Button } from "@mui/material";
-import AddCustomer from "./AddCustomer";
-
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
+import AddCustomer from "./AddCustomer";
+import EditCustomer from "./EditCustomer";
 
 function Customer() {
   const [customers, setCustomers] = useState([]);
@@ -22,54 +21,68 @@ function Customer() {
     { field: "city", sortable: true, filter: true },
     { field: "email", sortable: true, filter: true },
     { field: "phone", sortable: true, filter: true },
-    { cellRenderer: params => 
-      <Button size="small" onClick={() => deleteCustomer(params)}>
-        Delete
-        </Button>,
-        width: 120
-    }
+    {
+      cellRenderer: (params) => (
+        <EditCustomer fetchCustomers={fetchCustomers} data={params.data} />
+      ),
+      width: 120,
+    },
+    {
+      cellRenderer: (params) => (
+        <Button size="small" onClick={() => deleteCustomer(params)}>
+          Delete
+        </Button>
+      ),
+      width: 120,
+    },
   ]);
 
   const fetchCustomers = () => {
-    fetch('http://traineeapp.azurewebsites.net/api/customers')
-      .then(response => {
+    fetch("http://traineeapp.azurewebsites.net/api/customers")
+      .then((response) => {
         if (response.ok) {
           return response.json();
         } else {
-          console.error("Error in fetch:", response.status, response.statusText);
+          console.error(
+            "Error in fetch:",
+            response.status,
+            response.statusText
+          );
           throw new Error("Failed to fetch");
         }
       })
-      .then(data => {
+      .then((data) => {
         const embeddedCustomers = data.content;
         console.log("Customers:", embeddedCustomers);
         if (embeddedCustomers) {
           setCustomers(embeddedCustomers);
         } else {
-          console.error("API response does not contain customer data as expected.");
+          console.error(
+            "API response does not contain customer data as expected."
+          );
         }
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   };
 
   const deleteCustomer = (params) => {
     if (window.confirm("Are you sure?")) {
-      fetch(`http://traineeapp.azurewebsites.net/api/customers/${params.value}`, { method: 'DELETE' })
-        .then(response => {
-          if (response.ok)
-            fetchCustomers();
-          else
-            throw new Error("Error in DELETE: " + response.statusText);
+      const customerUrl =
+        params.data?.links[0]["href"] || params.node?.data?.links[0]["href"];
+
+      fetch(customerUrl, { method: "DELETE" })
+        .then((response) => {
+          if (response.ok) fetchCustomers();
+          else throw new Error("Error in DELETE: " + response.statusText);
         })
-        .catch(err => console.error(err));
+        .catch((err) => console.error(err));
     }
   };
-  
 
   return (
     <>
       <AddCustomer fetchCustomers={fetchCustomers} />
-      <div className="ag-theme-material" style={{ width: '100%', height: 600 }}>
+      <div className="ag-theme-material" style={{ width: "100%", height: 600 }}>
         <AgGridReact
           rowData={customers}
           columnDefs={columnDefs}

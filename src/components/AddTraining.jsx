@@ -4,17 +4,13 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from "@mui/material/DialogContent";
-import CustomerDialog from './CustomerDialog';
+import TrainingDialog from './TrainingDialog';
 
-export default function AddCustomer({ fetchCustomers }) {
-  const [customer, setCustomer] = useState({
-    firstname: '',
-    lastname: '',
-    streetaddress: '',
-    postcode: '',
-    city: '',
-    email: '',
-    phone: ''
+export default function AddTraining({ fetchTrainings }) {
+  const [trainings, setTrainings] = useState({
+    date: '',
+    duration: '',
+    activity: ''
   });
   const [open, setOpen] = useState(false);
 
@@ -27,20 +23,20 @@ export default function AddCustomer({ fetchCustomers }) {
   };
 
   const handleChange = (e) => {
-    setCustomer({...customer, [e.target.name]: e.target.value});
+    setTrainings({...trainings, [e.target.name]: e.target.value});
   }
 
-  const saveCustomer = () => {
-    fetch('http://traineeapp.azurewebsites.net/api/customers', {
+  const saveTrainings = () => {
+    fetch('http://traineeapp.azurewebsites.net/trainings', {
       method: 'POST',
       headers: { 'Content-type':'application/json' },
-      body: JSON.stringify(customer) 
+      body: JSON.stringify(trainings) 
     })
     .then(response => {
       if (!response.ok)
-        throw new Error("Error when adding customer: "  + response.statusText);
+        throw new Error("Error when adding training: "  + response.statusText);
 
-      fetchCustomers();
+      fetchTrainings();
     })
     .catch(err => console.error(err));
 
@@ -50,16 +46,16 @@ export default function AddCustomer({ fetchCustomers }) {
   return (
     <>
       <Button variant="outlined" onClick={handleClickOpen}>
-        Add Customer
+        Add Training
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>New Customer</DialogTitle>
+        <DialogTitle>New Training</DialogTitle>
         <DialogContent>
-          <CustomerDialog customer={customer} handleChange={handleChange} />
+          <TrainingDialog trainings={trainings} handleChange={handleChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={saveCustomer}>Save</Button>
+          <Button onClick={saveTrainings}>Save</Button>
         </DialogActions>
       </Dialog>
     </>
