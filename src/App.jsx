@@ -29,7 +29,7 @@ function App() {
           </List>
         </Drawer>
 
-        <main style={{ padding: '20px' }}>
+        <main style={{ padding: '10px' }}>
           <Outlet />
         </main>
       </Container>

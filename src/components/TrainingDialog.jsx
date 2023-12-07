@@ -30,8 +30,7 @@ function TrainingDialog({ trainings, handleChange }) {
         variant="standard"
         value={trainings.activity}
         onChange={handleChange}
-      />      
-
+      />
     </DialogContent>
   );
 }

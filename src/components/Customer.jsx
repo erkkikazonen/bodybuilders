@@ -82,7 +82,7 @@ function Customer() {
   return (
     <>
       <AddCustomer fetchCustomers={fetchCustomers} />
-      <div className="ag-theme-material" style={{ width: "100%", height: 600 }}>
+      <div className="ag-theme-material" style={{ width: "115%", height: 600 }}>
         <AgGridReact
           rowData={customers}
           columnDefs={columnDefs}

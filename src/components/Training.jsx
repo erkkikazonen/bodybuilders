@@ -17,36 +17,48 @@ function Training() {
       filter: true,
       cellRenderer: (params) => dayjs(params.value).format("DD.MM.YYYY HH:mm"),
     },
-    { field: "duration", sortable: true, filter: true, valueFormatter: (params) => params.value + " minutes" },
+    {
+      field: "duration",
+      sortable: true,
+      filter: true,
+      valueFormatter: (params) => params.value + " minutes",
+    },
     { field: "activity", sortable: true, filter: true },
-    { field: "customer.firstname", headerName: "Customer Name", sortable: true, filter: true }
+    {
+      field: "customer.firstname",
+      headerName: "Customer Name",
+      sortable: true,
+      filter: true,
+    },
   ];
 
   const fetchTrainings = () => {
-    fetch('http://traineeapp.azurewebsites.net/gettrainings')
-      .then(response => {
+    fetch("http://traineeapp.azurewebsites.net/gettrainings")
+      .then((response) => {
         if (response.ok) {
           return response.json();
         } else {
-          console.error("Error in fetch:", response.status, response.statusText);
+          console.error(
+            "Error in fetch:",
+            response.status,
+            response.statusText
+          );
           throw new Error("Failed to fetch");
         }
       })
-      .then(data => {
-        const modifiedData = data.map(item => ({
-          ...item
+      .then((data) => {
+        const modifiedData = data.map((item) => ({
+          ...item,
         }));
         setTrainings(modifiedData);
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   };
-
 
   return (
     <>
-          <AddTraining fetchTrainings
-          ={fetchTrainings} />
-      <div className="ag-theme-material" style={{ width: "100%", height: 600 }}>
+      <AddTraining fetchTrainings={fetchTrainings} />
+      <div className="ag-theme-material" style={{ width: "110%", height: 600 }}>
         <AgGridReact
           rowData={trainings}
           columnDefs={columnDefs}

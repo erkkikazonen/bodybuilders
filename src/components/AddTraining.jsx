@@ -27,21 +27,31 @@ export default function AddTraining({ fetchTrainings }) {
   }
 
   const saveTrainings = () => {
-    fetch('http://traineeapp.azurewebsites.net/trainings', {
-      method: 'POST',
-      headers: { 'Content-type':'application/json' },
-      body: JSON.stringify(trainings) 
+    const trainingUrl = data.links[0]["href"];
+  
+    if (!trainingUrl) {
+      console.error("Training URL is missing.");
+      return;
+    }
+  
+    fetch(trainingUrl, {
+      method: "PUT",
+      headers: { "Content-type": "application/json" },
+      body: JSON.stringify(trainings)
     })
-    .then(response => {
-      if (!response.ok)
-        throw new Error("Error when adding training: "  + response.statusText);
-
-      fetchTrainings();
-    })
-    .catch(err => console.error(err));
-
-    handleClose();
+      .then(response => {
+        if (!response.ok)
+          throw new Error("Error when updating training: " + response.statusText);
+  
+        return response.json();
+      })
+      .then(data => {
+        fetchTrainings();
+        handleClose();
+      })
+      .catch(err => console.error(err));
   }
+  
 
   return (
     <>
